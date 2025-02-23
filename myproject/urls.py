@@ -16,9 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin # type: ignore
 from django.urls import path # type: ignore
-from SenaTareas.views import my_view
+from SenaTareas.views import home_view, my_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('SenaTareas/', my_view,), 
+    path('SenaTareas/', my_view, name='my_view'),  # Asegúrate de que la URL termine con una barra
+    path('', home_view, name='home'),  # Ruta para la página de inicio
 ]
