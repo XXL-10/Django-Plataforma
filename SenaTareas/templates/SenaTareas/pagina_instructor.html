@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel del Instructor</title>
+    <link rel="stylesheet" href="{% static 'senatareas/css/styles.css' %}">
+</head>
+<body>
+    <header class="bg-green-800 text-white p-4">
+        <h1 class="text-3xl font-bold text-center">Panel del Instructor</h1>
+    </header>
+
+    <main class="p-8">
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">Bienvenido, Instructor</h2>
+            <p class="text-gray-700">Aquí puedes gestionar tus cursos y estudiantes.</p>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-xl font-bold mb-4">Cursos</h2>
+            <ul class="list-disc list-inside">
+                <li>Curso 1</li>
+                <li>Curso 2</li>
+                <li>Curso 3</li>
+            </ul>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-xl font-bold mb-4">Estudiantes</h2>
+            <ul class="list-disc list-inside">
+                <li>Estudiante 1</li>
+                <li>Estudiante 2</li>
+                <li>Estudiante 3</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white p-4 text-center">
+        <p>&copy; 2025 SofiaPlus. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>
