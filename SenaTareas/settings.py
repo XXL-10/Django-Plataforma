@@ -1,4 +1,3 @@
-# filepath: /c:/laragon/www/Listado/myproject/SenaTareas/settings.py
 import os
 from pathlib import Path
 
@@ -8,3 +7,5 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+
+LOGIN_URL = 'login'

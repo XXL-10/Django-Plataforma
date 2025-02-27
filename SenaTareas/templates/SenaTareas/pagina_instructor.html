@@ -36,6 +36,10 @@
             </ul>
         </section>
     </main>
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Cerrar Sesión</button>
+    </form>
 
     <footer class="bg-gray-800 text-white p-4 text-center">
         <p>&copy; 2025 SofiaPlus. Todos los derechos reservados.</p>

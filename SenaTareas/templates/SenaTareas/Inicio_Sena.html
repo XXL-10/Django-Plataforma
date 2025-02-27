@@ -23,45 +23,55 @@
         <h1 class="text-2xl font-bold mb-4 text-center text-green-800">SofiaPlus</h1>
         <h2 class="text-xl mb-6 text-center text-gray-700">INGRESO USUARIOS REGISTRADOS</h2>
 
-        <form method="post" action="{% url 'inicio_sena' %}">
-            {% csrf_token %}
-            <!-- Mostrar errores del formulario -->
-            {% if messages %}
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-                    <strong class="font-bold">Error:</strong>
-                    <span class="block sm:inline">
-                        {% for message in messages %}
-                            {{ message }}
-                        {% endfor %}
-                    </span>
+        {% if not user.is_authenticated %}
+            <form method="post" action="{% url 'inicio_sena' %}">
+                {% csrf_token %}
+                <!-- Mostrar errores del formulario -->
+                {% if messages %}
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                        <strong class="font-bold">Error:</strong>
+                        <span class="block sm:inline">
+                            {% for message in messages %}
+                                {{ message }}
+                            {% endfor %}
+                        </span>
+                    </div>
+                {% endif %}
+                <!-- Campo para la cédula de ciudadanía -->
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="cc">
+                        Cédula de Ciudadanía
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="cc" name="cc" type="text" placeholder="Número de Documento" required>
                 </div>
-            {% endif %}
-            <!-- Campo para la cédula de ciudadanía -->
-            <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="cc">
-                    Cédula de Ciudadanía
-                </label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="cc" name="cc" type="text" placeholder="Número de Documento">
-            </div>
 
-            <!-- Campo para la contraseña -->
-            <div class="mb-6">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
-                    Contraseña
-                </label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" name="password" type="password" placeholder="Contraseña">
-                <a href="#" class="text-sm text-orange-500 hover:text-orange-800">Olvidé mi contraseña</a>
-            </div>
-
-            <!-- Botón de ingreso y enlace para usuarios bloqueados/inactivos -->
-            <div class="flex items-center justify-between">
-                <div class="flex justify-center w-full">
-                    <button class="bg-green-800 hover:bg-green-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
-                        INGRESAR
-                    </button>
+                <!-- Campo para la contraseña -->
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+                        Contraseña
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" name="password" type="password" placeholder="Contraseña" required>
+                    <a href="#" class="text-sm text-orange-500 hover:text-orange-800">Olvidé mi contraseña</a>
                 </div>
-            </div>
-        </form>
+
+                <!-- Botón de ingreso -->
+                <div class="flex items-center justify-between">
+                    <div class="flex justify-center w-full">
+                        <button class="bg-green-800 hover:bg-green-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                            INGRESAR
+                        </button>
+                    </div>
+                </div>
+            </form>
+        {% else %}
+            <p class="text-center text-gray-700">Ya has iniciado sesión. Redirigiendo...</p>
+            <script>
+                // Redirigir según el rol del usuario
+                setTimeout(function() {
+                    window.location.href = "{% if user.rol == 'instructor' %}{% url 'pagina_instructor' %}{% else %}{% url 'pagina_aprendiz' %}{% endif %}";
+                }, 2000); // Redirigir después de 2 segundos
+            </script>
+        {% endif %}
     </div>
 
     <!-- Script para el efecto fade con degradado -->
@@ -90,4 +100,3 @@
     </script>
 </body>
 </html>
-
