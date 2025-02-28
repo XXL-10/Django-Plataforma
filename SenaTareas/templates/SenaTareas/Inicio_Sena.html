@@ -1,5 +1,8 @@
 {% load static %}
 {% include './includes/header.html' %}
+<title>Inicio Sena</title>
+</head>
+
 <body>
     <!-- Contenedor para las imágenes de fondo -->
     <div id="background-slider" class="fixed inset-0 z-0">
@@ -7,10 +10,6 @@
         <div class="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" style="background-image: url('{% static 'senatareas/images/bg1.webp' %}');"></div>
         <div class="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" style="background-image: url('{% static 'senatareas/images/bg2.webp' %}');"></div>
         <div class="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" style="background-image: url('{% static 'senatareas/images/bg3.webp' %}');"></div>
-        <div class="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" style="background-image: url('{% static 'senatareas/images/bg4.webp' %}');"></div>
-        <div class="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" style="background-image: url('{% static 'senatareas/images/bg5.webp' %}');"></div>
-        <div class="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" style="background-image: url('{% static 'senatareas/images/bg6.webp' %}');"></div>
-        <div class="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" style="background-image: url('{% static 'senatareas/images/bg7.webp' %}');"></div>
     </div>
 
     <!-- Contenedor del formulario de login -->
@@ -46,12 +45,15 @@
                 </div>
 
                 <!-- Campo para la contraseña -->
-                <div class="mb-6">
+                <div class="mb-6 relative">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
                         Contraseña
                     </label>
                     <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" name="password" type="password" placeholder="Contraseña" required>
-                    <a href="#" class="text-sm text-orange-500 hover:text-orange-800">Olvidé mi contraseña</a>
+                    <span id="togglePasswordContainer" class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 hidden">
+                        <i id="togglePassword" class="fas fa-eye cursor-pointer text-gray-700"></i>
+                    </span>
+                    <a href="#" id="forgotPasswordLink" class="text-sm text-orange-500 hover:text-orange-800">Olvidé mi contraseña</a>
                 </div>
 
                 <!-- Botón de ingreso -->
@@ -72,6 +74,48 @@
                 }, 2000); // Redirigir después de 2 segundos
             </script>
         {% endif %}
+    </div>
+
+    <!-- Popover para recuperar contraseña -->
+    <div id="forgotPasswordPopover" class="hidden fixed inset-0 z-20 flex items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-96">
+            <h2 class="text-xl mb-4 text-center text-gray-700">Recuperar Contraseña</h2>
+            <form id="forgotPasswordForm">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="nombre">
+                        Nombre
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="nombre" name="nombre" type="text" placeholder="Nombre" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="apellido">
+                        Apellido
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="apellido" name="apellido" type="text" placeholder="Apellido" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="cc">
+                        Cédula de Ciudadanía
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="cc_forgot" name="cc" type="text" placeholder="Número de Documento" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="telefono">
+                        Teléfono
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="telefono" name="telefono" type="text" placeholder="Teléfono" required>
+                </div>
+                <div class="flex items-center justify-between">
+                    <button class="bg-green-800 hover:bg-green-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                        Recuperar Contraseña
+                    </button>
+                    <button type="button" id="closePopover" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+            <div id="passwordResult" class="mt-4 text-center text-gray-700"></div>
+        </div>
     </div>
 
     <!-- Script para el efecto fade con degradado -->
@@ -97,6 +141,86 @@
 
         // Muestra la primera imagen al cargar la página
         backgrounds[0].style.opacity = 1;
+    </script>
+
+    <!-- Script para mostrar/ocultar la contraseña y el ícono del ojo -->
+    <script>
+        const passwordInput = document.querySelector('#password');
+        const togglePasswordContainer = document.querySelector('#togglePasswordContainer');
+        const togglePassword = document.querySelector('#togglePassword');
+
+        // Función para mostrar/ocultar el ícono del ojo
+        function toggleEyeIcon() {
+            if (passwordInput.value.trim() !== "") {
+                togglePasswordContainer.classList.remove('hidden'); // Muestra el ícono
+            } else {
+                togglePasswordContainer.classList.add('hidden'); // Oculta el ícono
+            }
+        }
+
+        // Función para alternar entre mostrar y ocultar la contraseña
+        function togglePasswordVisibility() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            togglePassword.classList.toggle('fa-eye-slash'); // Cambia el ícono
+        }
+
+        // Evento para mostrar/ocultar el ícono cuando se escribe en el campo
+        passwordInput.addEventListener('input', toggleEyeIcon);
+
+        // Evento para alternar la visibilidad de la contraseña al hacer clic en el ícono
+        togglePassword.addEventListener('click', togglePasswordVisibility);
+    </script>
+
+    <!-- Script para manejar el popover de recuperación de contraseña -->
+    <script>
+        const forgotPasswordLink = document.querySelector('#forgotPasswordLink');
+        const forgotPasswordPopover = document.querySelector('#forgotPasswordPopover');
+        const closePopover = document.querySelector('#closePopover');
+        const forgotPasswordForm = document.querySelector('#forgotPasswordForm');
+        const passwordResult = document.querySelector('#passwordResult');
+
+        // Mostrar el popover al hacer clic en el enlace "Olvidé mi contraseña"
+        forgotPasswordLink.addEventListener('click', function(event) {
+            event.preventDefault();
+            forgotPasswordPopover.classList.remove('hidden');
+        });
+
+        // Cerrar el popover al hacer clic en el botón "Cancelar"
+        closePopover.addEventListener('click', function() {
+            forgotPasswordPopover.classList.add('hidden');
+        });
+
+        // Manejar el envío del formulario de recuperación de contraseña
+        forgotPasswordForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const nombre = document.querySelector('#nombre').value;
+            const apellido = document.querySelector('#apellido').value;
+            const cc = document.querySelector('#cc_forgot').value;
+            const telefono = document.querySelector('#telefono').value;
+
+            fetch("{% url 'recuperar_contraseña' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ nombre, apellido, cc, telefono })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    passwordResult.textContent = `Tu contraseña es: ${data.password}`;
+                } else {
+                    passwordResult.textContent = 'No se encontró ningún usuario con los datos proporcionados.';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                passwordResult.textContent = 'Ocurrió un error al recuperar la contraseña.';
+            });
+        });
     </script>
 </body>
 </html>

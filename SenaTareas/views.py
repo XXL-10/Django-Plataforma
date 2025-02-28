@@ -2,7 +2,15 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+import json
+import random
+import string
 from .models import User
+
+def generar_contraseña():
+    caracteres = string.ascii_letters + string.digits
+    return ''.join(random.choices(caracteres, k=8))  # Genera una contraseña de 8 caracteres
 
 def home_view(request):
     return render(request, 'SenaTareas/Inicio_Sena.html')
@@ -60,4 +68,26 @@ def inicio_sena(request):
 @login_required
 def logout_view(request):
     logout(request)
-    return redirect('home')
+    return redirect('login')
+
+def recuperar_contraseña(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        nombre = data.get('nombre')
+        apellido = data.get('apellido')
+        cc = data.get('cc')
+        telefono = data.get('telefono')
+
+        try:
+            user = User.objects.get(nombre=nombre, apellido=apellido, cc=cc, telefono=telefono)
+            
+            # Generar una nueva contraseña
+            nueva_contraseña = generar_contraseña()
+            user.set_password(nueva_contraseña)  # Guardar la nueva contraseña en formato hash
+            user.save()
+
+            return JsonResponse({'success': True, 'password': nueva_contraseña})
+        except User.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'No se encontró un usuario con estos datos'})
+    
+    return JsonResponse({'success': False, 'message': 'Método no permitido'})
