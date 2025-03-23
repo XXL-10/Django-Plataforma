@@ -6,11 +6,12 @@
 <body>
     <!-- Contenedor para las imágenes de fondo -->
     <div id="background-slider" class="fixed inset-0 z-0">
-        <!-- Imágenes de fondo -->
-        <div class="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" style="background-image: url('{% static 'senatareas/images/bg1.webp' %}');"></div>
-        <div class="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" style="background-image: url('{% static 'senatareas/images/bg2.webp' %}');"></div>
-        <div class="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" style="background-image: url('{% static 'senatareas/images/bg3.webp' %}');"></div>
-    </div>
+    <!-- Imágenes de fondo generadas dinámicamente -->
+    {% for i in "1234567" %}
+        <div class="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" 
+             style="background-image: url('{% static 'senatareas/images/bg'|add:i|add:'.webp' %}');"></div>
+    {% endfor %}
+</div>
 
     <!-- Contenedor del formulario de login -->
     <div class="relative z-10 bg-white p-8 rounded-lg shadow-lg w-96 mx-auto mt-20">
@@ -78,7 +79,7 @@
 
     <!-- Popover para recuperar contraseña -->
     <div id="forgotPasswordPopover" class="hidden fixed inset-0 z-20 flex items-center justify-center ">
-        <div class="bg-white p-8 rounded-lg shadow-lg w-96">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-96 mx-auto mt-20">
             <h2 class="text-xl mb-4 text-center text-gray-700">Recuperar Contraseña</h2>
             <form id="forgotPasswordForm">
                 <div class="mb-4">

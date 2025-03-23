@@ -33,3 +33,25 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return self.cc
+class Curso(models.Model):
+    
+    
+    # Opciones para el campo 'tipo'
+    TIPO_CHOICES = [
+        ('presencial', 'Presencial'),
+        ('digital', 'Digital'),
+    ]
+
+    ficha = models.PositiveIntegerField(unique=True, help_text="Número de ficha (debe ser mayor o igual a 1000)")
+    nombre = models.CharField(max_length=200, help_text="Nombre del curso")
+    tipo = models.CharField(max_length=10, choices=TIPO_CHOICES, help_text="Tipo de curso (Presencial o Digital)")
+    sede = models.CharField(max_length=100, blank=True, null=True, help_text="Sede del curso (solo si es presencial)")
+    fecha_inicio = models.DateField(help_text="Fecha de inicio del curso")
+    fecha_finalizacion = models.DateField(help_text="Fecha de finalización del curso")
+
+    def __str__(self):
+        return f"{self.ficha} - {self.nombre}"
+
+    class Meta:
+        verbose_name = "Curso"
+        verbose_name_plural = "Cursos"

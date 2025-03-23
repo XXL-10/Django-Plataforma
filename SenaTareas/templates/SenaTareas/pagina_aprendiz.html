@@ -1,15 +1,160 @@
 {% load static %}
-{% include './includes/header.html' %}
-<title>Panel del Aprendiz</title>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    {% include './includes/header.html' %}
+    <title>Panel del Aprendiz</title>
 </head>
+<body class="bg-gray-100">
+    <!-- Barra de navegación -->
+    <nav class="bg-[#5EB319] text-white p-4 shadow-md border-b border-green-600">
+        <div class="container mx-auto flex justify-between items-center">
+            <!-- Ícono del SENA -->
+            <img src="{% static 'senatareas/images/sena-white-icon.svg' %}" alt="Logo" class="w-8 h-8 mr-4 hover:opacity-75 transition duration-300 cursor-pointer">
 
-<body>
-    <div class="container">
-        <h1>Bienvenido, Aprendiz {{ request.user.nombre }} {{ request.user.apellido }}</h1>
-        <form method="post" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-primary">Cerrar Sesión</button>
-        </form>
+            <!-- Botón de menú personalizado para pantallas pequeñas -->
+            <button id="btnMenu" class="lg:hidden p-2 bg-green-600 rounded-full focus:outline-none hover:bg-green-700 transition duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+
+            <!-- Enlaces de navegación -->
+            <div id="navbar" class="hidden lg:flex lg:items-center lg:space-x-4">
+                <!-- Ícono de notificaciones -->
+                <img src="{% static 'senatareas/images/svg.svg' %}" alt="Notificaciones" id="notificacionIcon" class="w-6 h-6 mr-4 hover:opacity-75 transition duration-300 cursor-pointer">
+                
+                <!-- Enlaces -->
+                <a href="#" id="inicioLink" class="ml-4 hover:underline hover:bg-green-600 px-3 py-1 rounded">Inicio</a>
+                <a href="#" id="cursosLink" class="ml-4 hover:underline hover:bg-green-600 px-3 py-1 rounded">Cursos</a>
+                <a href="#" id="perfilLink" class="ml-4 hover:underline hover:bg-green-600 px-3 py-1 rounded">Perfil</a>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="ml-4 hover:underline hover:bg-green-600 px-3 py-1 rounded">Cerrar sesión</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Barra de mensajes -->
+    <div id="mensajeContainer" class="hidden absolute top-16 right-4 w-64 bg-white border border-gray-200 p-6 shadow-xl rounded-lg sm:w-80 md:w-96">
+        <!-- Encabezado con ícono y título -->
+        <div class="flex items-center mb-4">
+            <!-- Ícono de notificaciones -->
+            <svg class="w-6 h-6 text-gray-700 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+            </svg>
+            <h3 class="text-lg font-semibold text-gray-800">Notificaciones</h3>
+        </div>
+
+        <!-- Mensaje de notificaciones -->
+        <p class="text-gray-600 mb-6">No tienes notificaciones nuevas.</p>
+
+        <!-- Botón de cerrar -->
+        <div class="flex justify-end">
+            <button id="cerrarMensaje" class="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition duration-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+                Cerrar
+            </button>
+        </div>
     </div>
+    
+    <!-- Contenedor principal -->
+    <div class="flex">
+        <!-- Panel lateral -->
+        <div id="panel" class="w-64 bg-gray-800 text-white h-screen p-6 shadow-lg border-r border-gray-700 lg:block hidden">
+            <h2 class="text-2xl font-semibold mb-6">Panel de Aprendiz</h2>
+            <ul>
+                <li><button class="block w-full text-left py-2 px-4 hover:bg-gray-700 rounded" onclick="cambiarContenido('dashboard')">Dashboard</button></li>
+                <li><button class="block w-full text-left py-2 px-4 hover:bg-gray-700 rounded" onclick="cambiarContenido('cursos')">Cursos</button></li>
+                <li><button class="block w-full text-left py-2 px-4 hover:bg-gray-700 rounded" onclick="cambiarContenido('actividades')">Actividades</button></li>
+                <li><button class="block w-full text-left py-2 px-4 hover:bg-gray-700 rounded" onclick="cambiarContenido('certificados')">Certificados</button></li>
+                <li><button class="block w-full text-left py-2 px-4 hover:bg-gray-700 rounded" onclick="cambiarContenido('configuracion')">Configuración</button></li>
+            </ul>
+        </div>
+
+        <!-- Contenido principal -->
+        <div class="flex-1 p-8">
+            <div id="contenido" class="bg-white p-6 shadow-md rounded-lg">
+                <h1 class="text-3xl font-semibold mb-4">Bienvenido al Panel de Aprendiz</h1>
+                <p id="descripcion" class="text-lg text-gray-600">Aquí puedes gestionar tus lecciones, evaluaciones y mucho más.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pie de página -->
+    <footer class="bg-gray-800 text-white text-center py-4 mt-8">
+        <p>&copy; 2025 Plataforma de Aprendizaje. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Botón para mostrar/ocultar el panel lateral -->
+    <button id="btnPanel" class="fixed top-1/3 right-0 p-2 bg-green-600 rounded-full focus:outline-none z-10 lg:hidden hover:bg-green-700 transition duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+    </button>
+
+    <!-- Scripts -->
+    <script>
+        // Función para cambiar el contenido
+        function cambiarContenido(pagina) {
+            const contenido = document.getElementById("contenido");
+            const descripcion = document.getElementById("descripcion");
+            const textos = {
+                dashboard: ["Bienvenido al Dashboard", "Aquí puedes ver tu progreso y estadísticas."],
+                cursos: ["Cursos", "Aquí están todos los cursos disponibles."],
+                actividades: ["Actividades", "Aquí puedes acceder a tus actividades y tareas."],
+                certificados: ["Certificados", "Aquí puedes ver y descargar tus certificados."],
+                configuracion: ["Configuración", "Aquí puedes ajustar tu perfil y preferencias."],
+                inicio: ["Bienvenido al Panel de Aprendiz", "Aquí puedes gestionar tus lecciones, evaluaciones y mucho más."],
+                perfil: ["Perfil", "Aquí puedes ver y editar tu perfil."]
+            };
+            contenido.innerHTML = `<h1 class="text-3xl font-semibold mb-4">${textos[pagina][0]}</h1><p class="text-lg text-gray-600">${textos[pagina][1]}</p>`;
+        }
+
+        // Eventos para los enlaces de navegación
+        document.querySelectorAll('#inicioLink, #cursosLink, #perfilLink').forEach(enlace => {
+            enlace.addEventListener('click', (e) => {
+                e.preventDefault();
+                cambiarContenido(enlace.id.replace('Link', ''));
+            });
+        });
+
+        // Mostrar/ocultar panel lateral
+        document.getElementById('btnPanel').addEventListener('click', () => {
+            document.getElementById('panel').classList.toggle('hidden');
+        });
+
+        // Mostrar/ocultar menú en móviles
+        document.getElementById('btnMenu').addEventListener('click', () => {
+            const navbar = document.getElementById('navbar');
+            navbar.classList.toggle('hidden');
+            navbar.classList.toggle('lg:flex');
+        });
+
+        // Mostrar/ocultar mensaje de notificaciones y alternar iconos
+        const notificacionIcon = document.getElementById('notificacionIcon');
+        const mensajeContainer = document.getElementById('mensajeContainer');
+        const cerrarMensaje = document.getElementById('cerrarMensaje');
+
+        notificacionIcon.addEventListener('click', function() {
+            // Alterna entre los iconos de correo (toggle entre dos iconos)
+            if (notificacionIcon.src.includes('svg.svg')) {
+                notificacionIcon.src = "{% static 'senatareas/images/svg2.svg' %}"; // Cambia al segundo icono
+            } else {
+                notificacionIcon.src = "{% static 'senatareas/images/svg.svg' %}"; // Vuelve al primer icono
+            }
+
+            // Muestra u oculta la barra de mensaje debajo del SVG
+            mensajeContainer.classList.toggle('hidden');
+        });
+
+        cerrarMensaje.addEventListener('click', function() {
+            // Oculta la barra de mensaje
+            mensajeContainer.classList.add('hidden');
+
+            // Restablece el icono a svg.svg
+            notificacionIcon.src = "{% static 'senatareas/images/svg.svg' %}";
+        });
+    </script>
 </body>
 </html>

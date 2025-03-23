@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    {% include './includes/header.html' %}
+    <title>{% block title %}Panel de Instructor{% endblock %}</title>
+    <style>
+      .popover {
+        display: none;
+        position: absolute;
+        background-color: white;
+        border: 1px solid #ccc;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+      }
+      .popover.active {
+        display: block;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 min-h-screen">
+    <header class="bg-[#5EB319] text-white p-4 shadow-md border-b border-green-600">
+        <div class="container mx-auto flex justify-between items-center">
+          <img src="{% static 'senatareas/images/sena-white-icon.svg' %}" alt="Logo" class="w-8 h-8 mr-4 hover:opacity-75 transition duration-300 cursor-pointer" />
+          <button id="btnMenu" class="lg:hidden p-2 bg-green-600 rounded-full focus:outline-none hover:bg-green-700 transition duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+          </button>
+          <nav id="navbar" class="hidden lg:flex lg:items-center lg:space-x-4">
+            <img src="{% static 'senatareas/images/svg.svg' %}" alt="Notificaciones" id="notificacionIcon" class="w-6 h-6 mr-4 hover:opacity-75 transition duration-300 cursor-pointer" />
+            <a href="#contenido" id="inicioLink" onclick="mostrarContenido('dashboard')" class="ml-4 hover:underline hover:bg-green-600 px-3 py-1 rounded">Inicio</a>
+            <a href="#cursos" id="cursosLink" onclick="mostrarContenido('cursos')" class="ml-4 hover:underline hover:bg-green-600 px-3 py-1 rounded">Cursos</a>
+            <a href="#perfil" id="perfilLink" onclick="mostrarContenido('perfil')" class="ml-4 hover:underline hover:bg-green-600 px-3 py-1 rounded">Perfil</a>
+            <form method="post" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <button type="submit" class="ml-4 hover:underline hover:bg-green-600 px-3 py-1 rounded">Cerrar sesión</button>
+            </form>
+          </nav>
+        </div>
+      </header>
+  
+    <div class="flex">
+        <aside id="sidebar" class="w-64 bg-gray-800 text-white h-screen p-6 shadow-lg border-r border-gray-700 lg:block hidden">
+            <h2 class="text-2xl font-semibold mb-6">Panel de Instructor</h2>
+            <ul>
+              <li><button class="block w-full text-left py-2 px-4 hover:bg-gray-700 rounded" onclick="mostrarContenido('cursos')">Ver Cursos</button></li>
+              <li><button class="block w-full text-left py-2 px-4 hover:bg-gray-700 rounded" onclick="mostrarContenido('crear')">Crear Cursos</button></li>
+              <li><button class="block w-full text-left py-2 px-4 hover:bg-gray-700 rounded" onclick="mostrarContenido('calificar')">Calificar Tareas</button></li>
+              <li><button class="block w-full text-left py-2 px-4 hover:bg-gray-700 rounded" onclick="mostrarContenido('estudiantes')">Ver Estudiantes</button></li>
+            </ul>
+          </aside>
+      </aside>
+      <main class="flex-1 p-6">
+        {% block content %}
+        {% endblock %}
+      </main>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const sidebar = document.getElementById("sidebar");
+        const btnMenu = document.getElementById("btnMenu");
+        btnMenu.addEventListener("click", function () {
+          sidebar.classList.toggle("hidden");
+        });
+      });
+    </script>
+  </body>
+</html>
